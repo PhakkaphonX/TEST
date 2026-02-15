@@ -102,6 +102,13 @@
                                                 title="Switch Camera">
                                                 <i class="bi bi-arrow-repeat" style="font-size: 1.2rem;"></i>
                                             </button>
+                                            <!-- Crop guide overlay -->
+                                            <div id="cropGuide" class="position-absolute d-none"
+                                                style="top: 15%; left: 15%; width: 70%; height: 70%; border: 2px dashed rgba(255,165,0,0.7); border-radius: 12px; pointer-events: none; z-index: 2;">
+                                                <span class="position-absolute w-100 text-center"
+                                                    style="bottom: -24px; font-size: 0.75rem; color: rgba(255,165,0,0.9);">📷
+                                                    Center food here</span>
+                                            </div>
                                             <div id="cameraPlaceholder" class="camera-placeholder">
                                                 <i class="bi bi-camera-video display-1 text-muted"></i>
                                                 <p class="text-muted mt-3">Camera is not started</p>

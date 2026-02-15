@@ -129,8 +129,8 @@ class CameraManager {
             const constraints = {
                 video: {
                     facingMode: this.currentFacingMode,
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 }
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 }
                 },
                 audio: false
             };
@@ -182,8 +182,8 @@ class CameraManager {
             this.stream = await navigator.mediaDevices.getUserMedia({
                 video: {
                     deviceId: { exact: deviceId },
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 }
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 }
                 },
                 audio: false
             });
@@ -209,8 +209,8 @@ class CameraManager {
             this.stream = await navigator.mediaDevices.getUserMedia({
                 video: {
                     facingMode: this.currentFacingMode,
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 }
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 }
                 },
                 audio: false
             });
@@ -262,6 +262,7 @@ class CameraManager {
             document.getElementById('stopCameraBtn')?.removeAttribute('disabled');
             document.getElementById('startCameraBtn')?.classList.add('d-none');
             document.getElementById('cameraError')?.classList.add('d-none');
+            document.getElementById('cropGuide')?.classList.remove('d-none');
         } else {
             document.getElementById('cameraPlaceholder')?.classList.remove('d-none');
             document.getElementById('captureBtn')?.setAttribute('disabled', 'true');
@@ -269,6 +270,7 @@ class CameraManager {
             document.getElementById('startCameraBtn')?.classList.remove('d-none');
             document.getElementById('switchCameraBtn')?.classList.add('d-none');
             document.getElementById('cameraSourceContainer')?.classList.add('d-none');
+            document.getElementById('cropGuide')?.classList.add('d-none');
         }
     }
 
@@ -284,18 +286,29 @@ class CameraManager {
         if (!this.stream) return;
 
         const ctx = this.canvas.getContext('2d');
-        this.canvas.width = this.video.videoWidth;
-        this.canvas.height = this.video.videoHeight;
+
+        // Center-crop: take the center 70% of the image to remove background noise
+        const cropRatio = 0.70;
+        const srcW = this.video.videoWidth;
+        const srcH = this.video.videoHeight;
+        const cropW = Math.round(srcW * cropRatio);
+        const cropH = Math.round(srcH * cropRatio);
+        const offsetX = Math.round((srcW - cropW) / 2);
+        const offsetY = Math.round((srcH - cropH) / 2);
+
+        this.canvas.width = cropW;
+        this.canvas.height = cropH;
 
         // If front camera (mirrored), flip the canvas capture too
         if (this.currentFacingMode === 'user') {
-            ctx.translate(this.canvas.width, 0);
+            ctx.translate(cropW, 0);
             ctx.scale(-1, 1);
         }
 
-        ctx.drawImage(this.video, 0, 0);
+        // Draw only the center-cropped portion
+        ctx.drawImage(this.video, offsetX, offsetY, cropW, cropH, 0, 0, cropW, cropH);
 
-        const imageData = this.canvas.toDataURL('image/jpeg', 0.9);
+        const imageData = this.canvas.toDataURL('image/jpeg', 1.0);
 
         // Stop camera after capture
         this.stopCamera();
