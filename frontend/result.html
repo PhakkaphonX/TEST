@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Result - Thai Food Analysis</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <i class="bi bi-cup-hot-fill me-2"></i>
+                <span>ThaiFood AI</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="camera.html">Camera</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="history.html">History</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <!-- Page Header -->
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">ผลการวิเคราะห์</h2>
+                        <p class="text-muted">AI ได้ระบุอาหารไทยของคุณแล้ว</p>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loadingState" class="text-center py-5">
+                        <div class="spinner-border text-primary mb-3" role="status">
+                            <span class="visually-hidden">Analyzing...</span>
+                        </div>
+                        <h5>กำลังวิเคราะห์รูปภาพ...</h5>
+                        <p class="text-muted">AI กำลังประมวลผลรูปอาหาร</p>
+                    </div>
+
+                    <!-- Result Card -->
+                    <div id="resultCard" class="card shadow-lg d-none">
+                        <div class="card-body">
+                            <!-- Food Image -->
+                            <div class="result-image mb-4">
+                                <img id="resultImage" src="" alt="Food" class="img-fluid rounded w-100">
+                            </div>
+
+                            <!-- Detection Info -->
+                            <div class="detection-info text-center mb-4">
+                                <div class="d-inline-block bg-success text-white px-3 py-2 rounded-pill mb-3">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    <span id="confidenceBadge">95% Confidence</span>
+                                </div>
+                            </div>
+
+                            <!-- Food Name -->
+                            <div class="text-center mb-4">
+                                <h3 id="foodName" class="fw-bold text-primary mb-1">Pad Thai</h3>
+                                <p id="foodNameTh" class="text-muted h5">ผัดไทย</p>
+                            </div>
+
+                            <!-- Nutrition Facts -->
+                            <div class="nutrition-facts mb-4">
+                                <h5 class="text-center mb-3">
+                                    <i class="bi bi-heart-pulse me-2 text-danger"></i>ข้อมูลโภชนาการ
+                                </h5>
+                                <div class="row g-3 justify-content-center">
+                                    <div class="col-6 col-md">
+                                        <div class="nutrition-item text-center">
+                                            <div class="nutrition-icon calories">
+                                                <i class="bi bi-fire"></i>
+                                            </div>
+                                            <div class="nutrition-value" id="calories">445</div>
+                                            <div class="nutrition-label">แคลอรี</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md">
+                                        <div class="nutrition-item text-center">
+                                            <div class="nutrition-icon protein">
+                                                <i class="bi bi-egg-fill"></i>
+                                            </div>
+                                            <div class="nutrition-value" id="protein">15.5</div>
+                                            <div class="nutrition-label">โปรตีน (ก.)</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md">
+                                        <div class="nutrition-item text-center">
+                                            <div class="nutrition-icon fat">
+                                                <i class="bi bi-droplet-fill"></i>
+                                            </div>
+                                            <div class="nutrition-value" id="fat">18.2</div>
+                                            <div class="nutrition-label">ไขมัน (ก.)</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md">
+                                        <div class="nutrition-item text-center">
+                                            <div class="nutrition-icon carbs">
+                                                <i class="bi bi-basket-fill"></i>
+                                            </div>
+                                            <div class="nutrition-value" id="carbs">55.3</div>
+                                            <div class="nutrition-label">คาร์โบฯ (ก.)</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md">
+                                        <div class="nutrition-item text-center">
+                                            <div class="nutrition-icon sugar">
+                                                <i class="bi bi-cup-straw"></i>
+                                            </div>
+                                            <div class="nutrition-value" id="sugar">0</div>
+                                            <div class="nutrition-label">น้ำตาล (ก.)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Alternative Predictions -->
+                            <div id="alternatives" class="alternatives mb-4">
+                                <h6 class="text-muted mb-3">
+                                    <i class="bi bi-list-ul me-2"></i>ผลลัพธ์อื่นที่เป็นไปได้
+                                </h6>
+                                <div id="alternativesList" class="list-group">
+                                    <!-- Alternative items will be inserted here -->
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex flex-wrap gap-3 justify-content-center">
+                                <button id="saveLogBtn" class="btn btn-success btn-lg">
+                                    <i class="bi bi-save me-2"></i>บันทึกประวัติ
+                                </button>
+                                <button id="analyzeAgainBtn" class="btn btn-primary">
+                                    <i class="bi bi-arrow-repeat me-2"></i>วิเคราะห์อีกครั้ง
+                                </button>
+                                <a href="dashboard.html" class="btn btn-outline-primary">
+                                    <i class="bi bi-graph-up me-2"></i>ดูแดชบอร์ด
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error State -->
+                    <div id="errorState" class="card border-danger d-none">
+                        <div class="card-body text-center py-5">
+                            <i class="bi bi-x-circle display-1 text-danger mb-3"></i>
+                            <h4 class="text-danger">การวิเคราะห์ล้มเหลว</h4>
+                            <p class="text-muted" id="errorMessage">ไม่สามารถวิเคราะห์รูปภาพได้</p>
+                            <button onclick="window.location.href='camera.html'" class="btn btn-primary">
+                                <i class="bi bi-arrow-left me-2"></i>ลองอีกครั้ง
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Save Success Modal -->
+    <div class="modal fade" id="saveSuccessModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <i class="bi bi-check-circle-fill display-1 text-success mb-3"></i>
+                    <h4>บันทึกสำเร็จ!</h4>
+                    <p class="text-muted">ผลการวิเคราะห์อาหารถูกบันทึกลงในประวัติแล้ว</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="history.html" class="btn btn-primary">ดูประวัติ</a>
+                        <a href="dashboard.html" class="btn btn-outline-primary">แดชบอร์ด</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-auto">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted small mb-0">&copy; 2024 Thai Food Analysis. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted small mb-0">AI-Powered Nutrition Analysis</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- TensorFlow.js (compatible with Teachable Machine / MobileNet) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.8.6/dist/tf.min.js"></script>
+    <!-- Teachable Machine Image library (for tm-my-image-model) -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
+    <!-- MobileNet (for fallback) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
+    <!-- Vision API -->
+    <script src="js/vision-api.js"></script>
+    <!-- Config -->
+    <script src="js/config.js"></script>
+    <!-- Main JS -->
+    <script src="js/main.js"></script>
+    <script src="js/result.js"></script>
+</body>
+
+</html>

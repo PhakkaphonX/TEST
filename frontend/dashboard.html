@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Thai Food Analysis</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <i class="bi bi-cup-hot-fill me-2"></i>
+                <span>ThaiFood AI</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="camera.html">Camera</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="history.html">History</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1">Dashboard</h2>
+                    <p class="text-muted mb-0">Track your nutrition and progress</p>
+                </div>
+                <a href="camera.html" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-2"></i>New Analysis
+                </a>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="text-muted mt-2">Loading dashboard...</p>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div id="dashboardContent" class="d-none">
+                <!-- Stats Cards -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="card stat-card calories-today">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="stat-icon">
+                                        <i class="bi bi-fire"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="text-muted mb-1">Today's Calories</h6>
+                                        <h3 class="mb-0" id="todayCalories">0</h3>
+                                        <small class="text-muted">kcal</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card meals-today">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="stat-icon">
+                                        <i class="bi bi-utensils"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="text-muted mb-1">Meals Today</h6>
+                                        <h3 class="mb-0" id="mealsToday">0</h3>
+                                        <small class="text-muted">meals</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card weekly-total">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="stat-icon">
+                                        <i class="bi bi-calendar-week"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="text-muted mb-1">Weekly Total</h6>
+                                        <h3 class="mb-0" id="weeklyCalories">0</h3>
+                                        <small class="text-muted">kcal</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card avg-daily">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="stat-icon">
+                                        <i class="bi bi-graph-up"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="text-muted mb-1">Daily Average</h6>
+                                        <h3 class="mb-0" id="avgDaily">0</h3>
+                                        <small class="text-muted">kcal</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="row g-4 mb-4">
+                    <!-- Weekly Chart -->
+                    <div class="col-lg-8">
+                        <div class="card h-100">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-bar-chart me-2"></i>Weekly Calories
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="weeklyChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nutrition Breakdown -->
+                    <div class="col-lg-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-pie-chart me-2"></i>Nutrition Breakdown
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="nutritionChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Status -->
+                <div class="row g-4 mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-heart-pulse me-2"></i>Health Status
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="healthStatus" class="text-center py-3">
+                                    <!-- Health status will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Logs -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-clock-history me-2"></i>Recent Analyses
+                                </h5>
+                                <a href="history.html" class="btn btn-sm btn-outline-primary">
+                                    View All
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div id="recentLogs" class="row g-3">
+                                    <!-- Recent logs will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="text-center py-5 d-none">
+                <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+                <h4>No Data Yet</h4>
+                <p class="text-muted">Start analyzing Thai food to see your dashboard</p>
+                <a href="camera.html" class="btn btn-primary">
+                    <i class="bi bi-camera me-2"></i>Analyze Food
+                </a>
+            </div>
+
+            <!-- Login Prompt -->
+            <div id="loginPrompt" class="text-center py-5 d-none">
+                <i class="bi bi-lock display-1 text-muted mb-3"></i>
+                <h4>Login Required</h4>
+                <p class="text-muted">Please login to view your dashboard</p>
+                <a href="login.html" class="btn btn-primary">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-auto">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted small mb-0">&copy; 2024 Thai Food Analysis. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted small mb-0">AI-Powered Nutrition Analysis</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Config -->
+    <script src="js/config.js"></script>
+    <!-- Main JS -->
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>
