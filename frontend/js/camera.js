@@ -2,6 +2,7 @@
  * =====================================================
  * Camera Page JavaScript
  * Handles webcam, upload, and AI prediction
+ * Supports mobile camera switching (front/back)
  * =====================================================
  */
 
@@ -12,6 +13,11 @@ class CameraManager {
         this.stream = null;
         this.model = null;
         this.isModelLoaded = false;
+
+        // Camera switching support
+        this.availableDevices = [];
+        this.currentDeviceId = null;
+        this.currentFacingMode = 'environment'; // default to back camera on mobile
     }
 
     // Initialize camera
@@ -33,12 +39,50 @@ class CameraManager {
         }
     }
 
+    // Enumerate available video devices
+    async enumerateDevices() {
+        try {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            this.availableDevices = devices.filter(d => d.kind === 'videoinput');
+            console.log(`Found ${this.availableDevices.length} camera(s):`, this.availableDevices);
+
+            // Populate the camera source dropdown
+            const select = document.getElementById('cameraSource');
+            if (select && this.availableDevices.length > 0) {
+                select.innerHTML = '';
+                this.availableDevices.forEach((device, idx) => {
+                    const option = document.createElement('option');
+                    option.value = device.deviceId;
+                    option.textContent = device.label || `Camera ${idx + 1}`;
+                    select.appendChild(option);
+                });
+
+                // Show the dropdown & switch button if more than 1 camera
+                if (this.availableDevices.length > 1) {
+                    document.getElementById('cameraSourceContainer')?.classList.remove('d-none');
+                    document.getElementById('switchCameraBtn')?.classList.remove('d-none');
+                }
+            }
+        } catch (err) {
+            console.warn('Could not enumerate devices:', err);
+        }
+    }
+
     // Bind event listeners
     bindEvents() {
         // Camera controls
         document.getElementById('startCameraBtn')?.addEventListener('click', () => this.startCamera());
         document.getElementById('stopCameraBtn')?.addEventListener('click', () => this.stopCamera());
         document.getElementById('captureBtn')?.addEventListener('click', () => this.captureImage());
+
+        // Switch camera (toggle front/back)
+        document.getElementById('switchCameraBtn')?.addEventListener('click', () => this.switchCamera());
+
+        // Camera source dropdown change
+        document.getElementById('cameraSource')?.addEventListener('change', (e) => {
+            this.currentDeviceId = e.target.value;
+            this.startCameraWithDevice(this.currentDeviceId);
+        });
 
         // Upload controls
         document.getElementById('browseBtn')?.addEventListener('click', () => {
@@ -79,41 +123,160 @@ class CameraManager {
         }
     }
 
-    // Start webcam
+    // Start webcam (initial start with facingMode preference)
     async startCamera() {
         try {
+            const constraints = {
+                video: {
+                    facingMode: this.currentFacingMode,
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                },
+                audio: false
+            };
+
+            this.stream = await navigator.mediaDevices.getUserMedia(constraints);
+            this.video.srcObject = this.stream;
+
+            // After getting permission, enumerate devices (labels are available now)
+            await this.enumerateDevices();
+
+            // Update the dropdown to reflect the active device
+            const activeTrack = this.stream.getVideoTracks()[0];
+            if (activeTrack) {
+                const settings = activeTrack.getSettings();
+                if (settings.deviceId) {
+                    this.currentDeviceId = settings.deviceId;
+                    const select = document.getElementById('cameraSource');
+                    if (select) select.value = this.currentDeviceId;
+                }
+            }
+
+            this.showCameraUI(true);
+            Utils.showToast('Camera started successfully', 'success');
+        } catch (error) {
+            console.error('Error starting camera:', error);
+            // Fallback: try without facingMode constraint
+            try {
+                this.stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+                    audio: false
+                });
+                this.video.srcObject = this.stream;
+                await this.enumerateDevices();
+                this.showCameraUI(true);
+                Utils.showToast('Camera started successfully', 'success');
+            } catch (fallbackError) {
+                console.error('Fallback camera also failed:', fallbackError);
+                this.showCameraError('Could not access camera. Please allow camera permissions.');
+            }
+        }
+    }
+
+    // Start camera with a specific device ID
+    async startCameraWithDevice(deviceId) {
+        // Stop existing stream first
+        this.stopStream();
+
+        try {
             this.stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+                video: {
+                    deviceId: { exact: deviceId },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                },
+                audio: false
+            });
+
+            this.video.srcObject = this.stream;
+            this.currentDeviceId = deviceId;
+            this.showCameraUI(true);
+        } catch (error) {
+            console.error('Error switching camera:', error);
+            this.showCameraError('Could not switch camera. Please try again.');
+        }
+    }
+
+    // Switch between front and back camera (toggle facingMode)
+    async switchCamera() {
+        // Toggle facing mode
+        this.currentFacingMode = this.currentFacingMode === 'environment' ? 'user' : 'environment';
+
+        // Stop existing stream
+        this.stopStream();
+
+        try {
+            this.stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: this.currentFacingMode,
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                },
                 audio: false
             });
 
             this.video.srcObject = this.stream;
 
+            // Mirror the video if using front camera
+            if (this.currentFacingMode === 'user') {
+                this.video.style.transform = 'scaleX(-1)';
+            } else {
+                this.video.style.transform = 'scaleX(1)';
+            }
+
+            // Update the dropdown to reflect the new device
+            const activeTrack = this.stream.getVideoTracks()[0];
+            if (activeTrack) {
+                const settings = activeTrack.getSettings();
+                if (settings.deviceId) {
+                    this.currentDeviceId = settings.deviceId;
+                    const select = document.getElementById('cameraSource');
+                    if (select) select.value = this.currentDeviceId;
+                }
+            }
+
+            const label = this.currentFacingMode === 'user' ? 'Front' : 'Back';
+            Utils.showToast(`Switched to ${label} camera`, 'success');
+        } catch (error) {
+            console.error('Error switching camera:', error);
+            // Revert facing mode
+            this.currentFacingMode = this.currentFacingMode === 'environment' ? 'user' : 'environment';
+            Utils.showToast('Could not switch camera', 'danger');
+        }
+    }
+
+    // Stop only the media stream (without resetting UI)
+    stopStream() {
+        if (this.stream) {
+            this.stream.getTracks().forEach(track => track.stop());
+            this.stream = null;
+        }
+        this.video.srcObject = null;
+    }
+
+    // Show/hide camera UI elements
+    showCameraUI(active) {
+        if (active) {
             document.getElementById('cameraPlaceholder')?.classList.add('d-none');
             document.getElementById('captureBtn')?.removeAttribute('disabled');
             document.getElementById('stopCameraBtn')?.removeAttribute('disabled');
             document.getElementById('startCameraBtn')?.classList.add('d-none');
-
-            Utils.showToast('Camera started successfully', 'success');
-        } catch (error) {
-            console.error('Error starting camera:', error);
-            this.showCameraError('Could not access camera. Please allow camera permissions.');
+            document.getElementById('cameraError')?.classList.add('d-none');
+        } else {
+            document.getElementById('cameraPlaceholder')?.classList.remove('d-none');
+            document.getElementById('captureBtn')?.setAttribute('disabled', 'true');
+            document.getElementById('stopCameraBtn')?.setAttribute('disabled', 'true');
+            document.getElementById('startCameraBtn')?.classList.remove('d-none');
+            document.getElementById('switchCameraBtn')?.classList.add('d-none');
+            document.getElementById('cameraSourceContainer')?.classList.add('d-none');
         }
     }
 
     // Stop webcam
     stopCamera() {
-        if (this.stream) {
-            this.stream.getTracks().forEach(track => track.stop());
-            this.stream = null;
-        }
-
-        this.video.srcObject = null;
-
-        document.getElementById('cameraPlaceholder')?.classList.remove('d-none');
-        document.getElementById('captureBtn')?.setAttribute('disabled', 'true');
-        document.getElementById('stopCameraBtn')?.setAttribute('disabled', 'true');
-        document.getElementById('startCameraBtn')?.classList.remove('d-none');
+        this.stopStream();
+        this.video.style.transform = '';
+        this.showCameraUI(false);
     }
 
     // Capture image from webcam
@@ -123,10 +286,17 @@ class CameraManager {
         const ctx = this.canvas.getContext('2d');
         this.canvas.width = this.video.videoWidth;
         this.canvas.height = this.video.videoHeight;
+
+        // If front camera (mirrored), flip the canvas capture too
+        if (this.currentFacingMode === 'user') {
+            ctx.translate(this.canvas.width, 0);
+            ctx.scale(-1, 1);
+        }
+
         ctx.drawImage(this.video, 0, 0);
 
         const imageData = this.canvas.toDataURL('image/jpeg', 0.9);
-        
+
         // Stop camera after capture
         this.stopCamera();
 

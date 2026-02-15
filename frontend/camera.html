@@ -83,10 +83,25 @@
                                 <!-- Webcam Tab -->
                                 <div class="tab-pane fade show active" id="camera-pane" role="tabpanel">
                                     <div class="camera-container p-4">
+                                        <!-- Camera Source Selector -->
+                                        <div id="cameraSourceContainer" class="d-none mb-3">
+                                            <label for="cameraSource" class="form-label small text-muted">
+                                                <i class="bi bi-camera me-1"></i>Camera Source
+                                            </label>
+                                            <select id="cameraSource" class="form-select form-select-sm"></select>
+                                        </div>
+
                                         <!-- Video Preview -->
-                                        <div class="video-wrapper mb-3">
+                                        <div class="video-wrapper mb-3 position-relative">
                                             <video id="videoElement" autoplay playsinline class="w-100 rounded"></video>
                                             <canvas id="canvasElement" class="d-none"></canvas>
+                                            <!-- Switch Camera Button (overlay) -->
+                                            <button id="switchCameraBtn"
+                                                class="btn btn-light btn-sm position-absolute d-none"
+                                                style="top: 10px; right: 10px; opacity: 0.85; border-radius: 50%; width: 42px; height: 42px; padding: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.2);"
+                                                title="Switch Camera">
+                                                <i class="bi bi-arrow-repeat" style="font-size: 1.2rem;"></i>
+                                            </button>
                                             <div id="cameraPlaceholder" class="camera-placeholder">
                                                 <i class="bi bi-camera-video display-1 text-muted"></i>
                                                 <p class="text-muted mt-3">Camera is not started</p>
