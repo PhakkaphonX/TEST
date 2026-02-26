@@ -1,0 +1,207 @@
+/* ===================== RESULT PAGE ===================== */
+
+.result-page {
+    padding: 2rem 0 3rem;
+}
+
+.loading-state {
+    padding: 4rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.spin-icon {
+    color: var(--accent);
+    animation: spin 1s linear infinite;
+}
+
+.result-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.result-image-section {
+    overflow: hidden;
+}
+
+.result-img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.result-food-name {
+    padding: 1.5rem;
+}
+
+.result-food-name h2 {
+    margin-bottom: 0.25rem;
+}
+
+.food-th {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.confidence-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.85rem;
+    background: rgba(39, 174, 96, 0.12);
+    color: var(--success);
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Nutrition Grid */
+.nutrition-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+}
+
+.nutrition-card {
+    padding: 1.25rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.nutrition-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+}
+
+.cal-card::before {
+    background: linear-gradient(90deg, #E85D26, #FF7B3A);
+}
+
+.protein-card::before {
+    background: linear-gradient(90deg, #C0392B, #E74C3C);
+}
+
+.fat-card::before {
+    background: linear-gradient(90deg, #D4A843, #F0C95C);
+}
+
+.carb-card::before {
+    background: linear-gradient(90deg, #2D5016, #4A7C28);
+}
+
+.nut-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin: 0 auto 0.75rem;
+}
+
+.cal-icon {
+    background: linear-gradient(135deg, #E85D26, #FF7B3A);
+}
+
+.protein-icon {
+    background: linear-gradient(135deg, #C0392B, #E74C3C);
+}
+
+.fat-icon {
+    background: linear-gradient(135deg, #D4A843, #F0C95C);
+}
+
+.carb-icon {
+    background: linear-gradient(135deg, #2D5016, #4A7C28);
+}
+
+.nut-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.nut-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+.nut-unit {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Alternatives */
+.alternatives-section {
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.alternatives-section h4 {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+}
+
+.alt-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.alt-item:last-child {
+    border-bottom: none;
+}
+
+.alt-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.alt-th {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.alt-conf {
+    font-weight: 600;
+    color: var(--success);
+    font-size: 0.85rem;
+}
+
+/* Actions */
+.result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .result-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .nutrition-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}

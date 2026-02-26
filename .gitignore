@@ -7,6 +7,12 @@ node_modules/
 # Uploads
 backend/uploads/
 
+# Build output (Render will build this)
+frontend/dist/
+
+# Backup (old HTML frontend)
+frontend_backup/
+
 # OS files
 .DS_Store
 Thumbs.db

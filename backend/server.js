@@ -41,8 +41,8 @@ fs.ensureDirSync(uploadsDir);
 // Serve static files from uploads directory
 app.use('/uploads', express.static(uploadsDir));
 
-// Serve static files from frontend (in production)
-app.use(express.static(path.join(__dirname, '../frontend')));
+// Serve static files from React build (in production)
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 // Serve Teachable Machine model files (they live outside frontend/)
 app.use('/tm-my-image-model', express.static(path.join(__dirname, '../tm-my-image-model')));
@@ -91,9 +91,9 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Root endpoint - redirect to frontend
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+// SPA catch-all — serve React index.html for all non-API routes
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 // 404 handler
