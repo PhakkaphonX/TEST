@@ -11,20 +11,45 @@ const features = [
 ]
 
 const FOOD_EMOJIS = {
-    'Pad Thai': '🍝',
-    'Khao Pad': '🍚',
-    'Tom Yum Goong': '🍲',
-    'Green Curry': '🍛',
-    'Massaman Curry': '🍛',
-    'Som Tum': '🥗',
-    'Mango Sticky Rice': '🥭',
-    'Pad Krapow Moo': '🥘',
-    'Kai Yang': '🍗',
-    'Satay': '🥩',
-    'Spring Rolls': '🥟',
-    'Pla Tod': '🐟',
-    'Khanom Jeen': '🍜',
-    'Khao Kha Moo': '🍖',
+    // กระเพรา
+    'Pad Krapow Gai': '🥘', 'Pad Krapow Talay': '🥘', 'Pad Krapow Moo Krob': '🥘',
+    'Pad Krapow Moo Sab': '🥘', 'Pad Krapow Moo Sam Chan': '🥘',
+    'Pad Krapow Goong': '🦐', 'Pad Krapow Krueang Nai': '🥘',
+    'Pad Krapow Talay Ruam': '🦑', 'Pad Krapow Muk': '🦑',
+    // ขนม/ของหวาน
+    'Kluay Buat Chi': '🍌', 'Khanom Krok': '🥞', 'Khanom Thuay': '🍮',
+    'Mango Sticky Rice': '🥭', 'Tub Tim Krob': '🍧', 'Bua Loy': '🍡',
+    'Chao Kuay': '🧊', 'Lod Chong': '🍡',
+    // ก๋วยเตี๋ยว/เส้น
+    'Tom Yum Noodles': '🍜', 'Boat Noodles': '🍜', 'Pork Noodle Soup': '🍜',
+    'Ba Mee Moo Daeng': '🍜', 'Rad Na': '🍝', 'Pad See Ew': '🍝',
+    'Pad Thai': '🍝', 'Khanom Jeen Nam Ya': '🍜',
+    // แกง
+    'Green Curry': '🍛', 'Green Curry Chicken': '🍛', 'Kaeng Jued Taohu': '🍲',
+    'Red Curry Pork': '🍛', 'Jungle Curry': '🍛', 'Sour Curry': '🍲',
+    // ต้ม/ซุป
+    'Tom Kha Gai': '🍲', 'Tom Yum Soft Bone': '🍲', 'Tom Yum Goong': '🍲',
+    'Pork Blood Soup': '🍲',
+    // ข้าว
+    'Khao Kha Moo': '🍖', 'Khao Kai Jeow': '🍳', 'Khao Kluk Kapi': '🍚',
+    'Khao Pad': '🍚', 'Khao Man Gai': '🍗', 'Khao Na Ped': '🦆',
+    'Khao Moo Krob': '🍖', 'Khao Moo Daeng': '🍖',
+    // ไก่/หมู/ปลา
+    'Gai Tod': '🍗', 'Gai Yang': '🍗', 'Moo Tod': '🥩', 'Moo Ping': '🥩',
+    'Nam Tok Moo': '🥩', 'Pla Tod': '🐟', 'Peek Gai Tod': '🍗',
+    'Tod Man Pla': '🐟', 'Look Chin Tod': '🧆', 'Pla Goong': '🦐',
+    // ยำ/ส้มตำ
+    'Yum Talay': '🥗', 'Yum Woon Sen': '🥗', 'Yum Moo Yor': '🥗',
+    'Som Tum': '🥗', 'Som Tum Thai': '🥗', 'Som Tum Pla Ra': '🥗',
+    'Som Tum Poo Pla Ra': '🥗', 'Tum Sua': '🥗', 'Tum Taeng': '🥗',
+    'Tum Thua': '🥗', 'Tum Poo Pla Ra': '🥗',
+    // ลาบ
+    'Larb Gai': '🥬', 'Larb Neua Dib': '🥬', 'Larb Neua Suk': '🥬', 'Larb Moo': '🥬',
+    // สุกี้/อื่นๆ
+    'Suki Nam': '🍲', 'Suki Haeng': '🍲', 'Khao Soi': '🍜', 'Sai Ua': '🌭',
+    // เครื่องดื่ม
+    'Iced Coffee': '☕', 'Green Tea': '🍵', 'Thai Tea': '🧋',
+    'Coconut Water': '🥥', 'Longan Drink': '🧃', 'Oliang': '☕',
 }
 
 const foods = Object.values(CONFIG.AI.THAI_FOOD_MAPPING)
