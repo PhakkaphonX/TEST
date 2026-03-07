@@ -71,22 +71,25 @@ export default function Result() {
     function processPredictions(predictions) {
         const sorted = [...predictions].sort((a, b) => b.probability - a.probability)
         const topPrediction = sorted[0]
-        const className = topPrediction.className.toLowerCase().trim()
+        const className = topPrediction.className.trim()
+        const classNameLower = className.toLowerCase()
         const confidence = (topPrediction.probability * 100).toFixed(1)
 
-        // Check mapping
-        let food = null
-        for (const [key, value] of Object.entries(CONFIG.AI.THAI_FOOD_MAPPING)) {
-            if (className.includes(key) || key.includes(className)) {
-                food = value
-                break
+        // Check mapping - first try exact match, then partial match
+        let food = CONFIG.AI.THAI_FOOD_MAPPING[className] || CONFIG.AI.THAI_FOOD_MAPPING[classNameLower]
+
+        if (!food) {
+            for (const [key, value] of Object.entries(CONFIG.AI.THAI_FOOD_MAPPING)) {
+                if (classNameLower.includes(key) || key.includes(classNameLower)) {
+                    food = value
+                    break
+                }
             }
         }
 
         if (!food) {
-            // Try by class name directly
-            food = { name: topPrediction.className, nameTh: '', ...CONFIG.AI.DEFAULT_FOOD }
-            food.name = topPrediction.className
+            // Use class name with default nutrition values
+            food = { name: className, nameTh: className, ...CONFIG.AI.DEFAULT_FOOD }
         }
 
         const mainResult = {
@@ -102,17 +105,23 @@ export default function Result() {
 
         // Alternatives
         const alts = sorted.slice(1, 4).map(p => {
-            const cn = p.className.toLowerCase().trim()
-            let altFood = CONFIG.AI.DEFAULT_FOOD
-            for (const [key, val] of Object.entries(CONFIG.AI.THAI_FOOD_MAPPING)) {
-                if (cn.includes(key) || key.includes(cn)) {
-                    altFood = val
-                    break
+            const cn = p.className.trim()
+            const cnLower = cn.toLowerCase()
+            let altFood = CONFIG.AI.THAI_FOOD_MAPPING[cn] || CONFIG.AI.THAI_FOOD_MAPPING[cnLower]
+            if (!altFood) {
+                for (const [key, val] of Object.entries(CONFIG.AI.THAI_FOOD_MAPPING)) {
+                    if (cnLower.includes(key) || key.includes(cnLower)) {
+                        altFood = val
+                        break
+                    }
                 }
             }
+            if (!altFood) {
+                altFood = { name: cn, nameTh: cn }
+            }
             return {
-                name: altFood.name || p.className,
-                nameTh: altFood.nameTh || '',
+                name: altFood.name || cn,
+                nameTh: altFood.nameTh || cn,
                 confidence: (p.probability * 100).toFixed(1),
             }
         }).filter(a => parseFloat(a.confidence) > 1)
